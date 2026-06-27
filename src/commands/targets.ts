@@ -1,3 +1,4 @@
+import { deleteTarget } from '../config';
 import type { ConfigFile } from '../types';
 
 export interface TargetsDeps {
@@ -23,11 +24,10 @@ export function runList(deps: TargetsDeps): number {
 
 export function runRemove(name: string, deps: TargetsDeps): number {
   const config = deps.loadConfig();
-  if (!(name in config.targets)) {
+  if (!deleteTarget(config, name)) {
     deps.log(`No saved target "${name}".`);
     return 1;
   }
-  delete config.targets[name];
   deps.saveConfig(config);
   deps.log(`Removed target "${name}".`);
   return 0;

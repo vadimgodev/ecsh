@@ -1,4 +1,4 @@
-import { toStableTarget } from '../config';
+import { toStableTarget, validateTargetName } from '../config';
 import { ERROR_LINKS, formatError, mapError } from '../errors';
 import type { ResolveInput } from '../resolver';
 import type { ResolvedTarget, Target } from '../types';
@@ -21,6 +21,14 @@ export interface ConnectDeps {
 }
 
 export async function runConnect(opts: ConnectOptions, deps: ConnectDeps): Promise<number> {
+  if (opts.saveAs !== undefined) {
+    const error = validateTargetName(opts.saveAs);
+    if (error !== null) {
+      deps.log(error);
+      return 1;
+    }
+  }
+
   const pf = deps.preflight();
   if (!pf.ok) {
     for (const tool of pf.missing) {

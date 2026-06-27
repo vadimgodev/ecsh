@@ -81,4 +81,35 @@ describe('runConnect', () => {
       command: '/bin/bash',
     });
   });
+
+  it('rejects an invalid --save name without connecting', async () => {
+    const resolve = vi.fn();
+    const exec = vi.fn();
+    const saveTarget = vi.fn();
+    const log = vi.fn();
+    const code = await runConnect(
+      { flags: {}, saveAs: 'bad name!' },
+      makeDeps({ resolve, exec, saveTarget, log }),
+    );
+    expect(code).toBe(1);
+    expect(resolve).not.toHaveBeenCalled();
+    expect(exec).not.toHaveBeenCalled();
+    expect(saveTarget).not.toHaveBeenCalled();
+    expect(log).toHaveBeenCalledWith(expect.any(String));
+  });
+
+  it('rejects a reserved --save name without connecting', async () => {
+    const resolve = vi.fn();
+    const exec = vi.fn();
+    const saveTarget = vi.fn();
+    const log = vi.fn();
+    const code = await runConnect(
+      { flags: {}, saveAs: 'save' },
+      makeDeps({ resolve, exec, saveTarget, log }),
+    );
+    expect(code).toBe(1);
+    expect(resolve).not.toHaveBeenCalled();
+    expect(exec).not.toHaveBeenCalled();
+    expect(saveTarget).not.toHaveBeenCalled();
+  });
 });

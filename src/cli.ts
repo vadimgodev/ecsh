@@ -100,6 +100,13 @@ function doctorDeps(opts: Record<string, string | undefined>) {
   };
 }
 
+export function extractTrailingCommand(argv: string[]): { argv: string[]; command?: string } {
+  const i = argv.indexOf('--');
+  if (i === -1) return { argv };
+  const trailing = argv.slice(i + 1);
+  return { argv: argv.slice(0, i), command: trailing.length ? trailing.join(' ') : undefined };
+}
+
 export function buildProgram(): Command {
   const program = new Command();
   program
@@ -118,29 +125,19 @@ export function buildProgram(): Command {
       .option('--command <command>', 'command to run (default /bin/bash)');
 
   // Default action: connect (optionally to a saved target name).
-  withConnectFlags(
-    program.argument('[name]', 'saved target name').argument('[command...]', 'command (after --)'),
-  )
+  withConnectFlags(program.argument('[name]', 'saved target name'))
     .option('--save <name>', 'connect and save as a target')
-    .action(
-      async (
-        name: string | undefined,
-        command: string[],
-        opts: Record<string, string | undefined>,
-      ) => {
-        const flags = connectFlags(opts);
-        if (command.length) flags.command = command.join(' ');
-        process.exitCode = await runConnect({ name, flags, saveAs: opts.save }, connectDeps);
-      },
-    );
-
-  withConnectFlags(program.command('save <name>').description('run the wizard and save a target'))
-    .argument('[command...]', 'command (after --)')
-    .action(async (name: string, command: string[], opts: Record<string, string | undefined>) => {
+    .action(async (name: string | undefined, opts: Record<string, string | undefined>) => {
       const flags = connectFlags(opts);
-      if (command.length) flags.command = command.join(' ');
-      process.exitCode = await runSave(name, flags, saveDeps);
+      process.exitCode = await runConnect({ name, flags, saveAs: opts.save }, connectDeps);
     });
+
+  withConnectFlags(
+    program.command('save <name>').description('run the wizard and save a target'),
+  ).action(async (name: string, opts: Record<string, string | undefined>) => {
+    const flags = connectFlags(opts);
+    process.exitCode = await runSave(name, flags, saveDeps);
+  });
 
   program
     .command('ls')
@@ -171,7 +168,9 @@ export function buildProgram(): Command {
 }
 
 export async function main(argv: string[]): Promise<void> {
-  await buildProgram().parseAsync(argv);
+  const { argv: cleaned, command } = extractTrailingCommand(argv);
+  const finalArgv = command !== undefined ? [...cleaned, '--command', command] : cleaned;
+  await buildProgram().parseAsync(finalArgv);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
