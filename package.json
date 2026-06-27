@@ -1,0 +1,35 @@
+{
+  "name": "ecsh",
+  "version": "0.1.0",
+  "description": "ssh for ECS — open an interactive shell in an AWS ECS container",
+  "type": "module",
+  "bin": { "ecsh": "dist/cli.js" },
+  "files": ["dist"],
+  "engines": { "node": ">=22" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "license": "MIT",
+  "author": "Vadim Goncharov",
+  "dependencies": {
+    "@aws-sdk/client-ecs": "^3.1075.0",
+    "@aws-sdk/credential-providers": "^3.1075.0",
+    "@inquirer/prompts": "^8.5.2",
+    "commander": "^15.0.0",
+    "env-paths": "^4.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.1",
+    "@types/node": "^22.0.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}
