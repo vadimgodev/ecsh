@@ -1,5 +1,4 @@
 import { spawnSync } from 'node:child_process';
-import { pathToFileURL } from 'node:url';
 import { Command } from 'commander';
 import pkg from '../package.json';
 import { loadAwsProfiles } from './aws-profiles';
@@ -171,11 +170,4 @@ export async function main(argv: string[]): Promise<void> {
   const { argv: cleaned, command } = extractTrailingCommand(argv);
   const finalArgv = command !== undefined ? [...cleaned, '--command', command] : cleaned;
   await buildProgram().parseAsync(finalArgv);
-}
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main(process.argv).catch((e) => {
-    process.stderr.write(`${(e as Error).message}\n`);
-    process.exitCode = 1;
-  });
 }

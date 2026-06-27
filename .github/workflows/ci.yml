@@ -23,6 +23,12 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Smoke-test the built CLI through a symlink (mimics global install)
+        run: |
+          ln -sf "$PWD/dist/bin.js" "$RUNNER_TEMP/ecsh"
+          out="$(node "$RUNNER_TEMP/ecsh" --version)"
+          echo "ecsh --version -> $out"
+          test "$out" = "$(node -p "require('./package.json').version")"
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: test
