@@ -1,5 +1,5 @@
 {
-  "name": "ecsh",
+  "name": "@vadimgodev/ecsh",
   "version": "0.1.0",
   "description": "ssh for ECS — open an interactive shell in an AWS ECS container",
   "type": "module",

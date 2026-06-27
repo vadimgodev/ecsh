@@ -4,7 +4,7 @@
 ARNs or remembering the long `aws ecs execute-command` invocation.
 
 ```bash
-npx ecsh            # interactive wizard: profile → cluster → service → task → container → shell
+npx @vadimgodev/ecsh   # interactive wizard: profile → cluster → service → task → container → shell
 ```
 
 ## Prerequisites
@@ -26,8 +26,8 @@ Run `ecsh doctor` to check your environment.
 ## Install
 
 ```bash
-npx ecsh              # no install
-npm i -g ecsh         # global install
+npx @vadimgodev/ecsh        # no install
+npm i -g @vadimgodev/ecsh   # global install (provides the `ecsh` command)
 ```
 
 Requires Node.js ≥ 22.
