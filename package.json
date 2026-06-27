@@ -1,12 +1,20 @@
 {
   "name": "@vadimgodev/ecsh",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ssh for ECS — open an interactive shell in an AWS ECS container",
   "type": "module",
-  "bin": { "ecsh": "dist/cli.js" },
-  "files": ["dist"],
-  "engines": { "node": ">=22" },
-  "publishConfig": { "access": "public" },
+  "bin": {
+    "ecsh": "dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
@@ -18,10 +26,25 @@
   },
   "license": "MIT",
   "author": "Vadim Goncharov",
-  "repository": { "type": "git", "url": "git+https://github.com/vadimgodev/ecsh.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vadimgodev/ecsh.git"
+  },
   "homepage": "https://github.com/vadimgodev/ecsh#readme",
-  "bugs": { "url": "https://github.com/vadimgodev/ecsh/issues" },
-  "keywords": ["ecs", "aws", "ssh", "exec", "cli", "execute-command", "session-manager", "fargate", "ssm"],
+  "bugs": {
+    "url": "https://github.com/vadimgodev/ecsh/issues"
+  },
+  "keywords": [
+    "ecs",
+    "aws",
+    "ssh",
+    "exec",
+    "cli",
+    "execute-command",
+    "session-manager",
+    "fargate",
+    "ssm"
+  ],
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.1075.0",
     "@aws-sdk/credential-providers": "^3.1075.0",

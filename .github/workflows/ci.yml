@@ -13,8 +13,8 @@ jobs:
       matrix:
         node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -23,6 +23,12 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Smoke-test the built CLI through a symlink (mimics global install)
+        run: |
+          ln -sf "$PWD/dist/bin.js" "$RUNNER_TEMP/ecsh"
+          out="$(node "$RUNNER_TEMP/ecsh" --version)"
+          echo "ecsh --version -> $out"
+          test "$out" = "$(node -p "require('./package.json').version")"
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: test
@@ -31,15 +37,12 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
           cache: npm
-      # OIDC trusted publishing requires npm >= 11.5.1
-      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
-      # Auth via GitHub OIDC trusted publishing (id-token: write) — no NPM_TOKEN needed
       - run: npm publish --provenance --access public
